@@ -21,13 +21,19 @@ def kubna_metoda(x1, x2, tol):
                  ])
     #F = [x1, x2, dx1, dx2]
     F = np.array([func(x1), func(x2), dfunc(x1), dfunc(x2)])
+    #f(x) = a + bx +cx**2 + dx**3 => x = F / Y
     abcd = np.linalg.solve(Y, F)
-
+    
+    #Radi jednostavnosti, b, c, d koeficijente sam izmenio u a,b,c za racunanje kvadratnih formula
+    #Odnosno x' = a + 2*b*x + 3*c*x**2
     a = abcd[1]
     b = abcd[2]
     c = abcd[3]
     #D = b^2 - 4*a*c (Matrica 4x4 => D = 4*D)
     D = math.sqrt(4*b**2 - 12*a*c)
+
+    #Posto je u Metodi Parabole ova formula bila xopt = -b/2c
+    #Ovde ce jer je kubna funkcija formula biti xopt = -2*b/3*2*c
     xa = (-2*b - D)/(6*c)
     xb = (-2*b + D)/(6*c)
 
@@ -35,11 +41,13 @@ def kubna_metoda(x1, x2, tol):
         x = xa
     else:
         x = xb
+
     fx = func(x)
     n = 0
 
     while np.abs(np.dot([1, x, x**2, x**3], abcd) - fx) > tol:
 
+        #Posto smo blizi optimalnom resenju, zameniti udaljeniji clan sa xopt
         if func(xa) < func(xb):
             x2 = x
         else:

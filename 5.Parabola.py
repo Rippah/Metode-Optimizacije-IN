@@ -11,18 +11,24 @@ def parabola(x1, x3, tol):
     pom = np.ones(3).transpose()
     #y = [x^0, x^1, x^2]
     Y = np.array([pom, X, X*X]).transpose()
-
     F = np.linspace(0, 0, len(X))
 
     for i in range(0, len(X)):
         F[i] = func(X[i])
     
+    #f(x) = a + bx + cx**2
+    #linalg.solve => Y*x = F => x = Y / F
     abc = np.linalg.solve(Y, F)
+    #f(x) = -28x + 10x**2
     print(abc)
+    #xopt = -b/2c
     x = -abc[1]/(2*abc[2])
+    #fopt
     fx = func(x)
     n = 0
 
+    #ceo postupak funkcionise sve dok |f(opt) - y(opt)| < tolerancije
+    #np.dot radi sledece => sum(NizA * NizB)
     while np.abs(np.dot([1, x, x**2], abc) - fx) > tol:
         if(x > X[1]) and (x < X[2]):
             if(fx < F[1]) and (fx < F[2]):
