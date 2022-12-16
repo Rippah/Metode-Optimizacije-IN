@@ -1,0 +1,222 @@
+1. Kodiranje i Dekodiranje Hromozoma
+
+--Samo za Binarniga--
+
+def binary_encode(chromosome, binary_value, minimal_value, precision):
+
+    ret = ""
+    for i in chromosome:
+        value = round((g - minimal_value)/binary_value)
+        print("Value = ", value)
+        ret += binary_value[2:].rjust(precision, '0')
+    return ret
+
+def binary_encode_chromosomes(chromosomes, precision, minimal_value, maximum_value):
+    binary_value = (maximum_value - minimal_value) / (2**precision - 1)
+    print("binary_value = ", binary_value)
+    binary_chromosomes = [binary_encode(c, binary_value, minimal_value, precision) for c in chromosomes]
+    return binary_chromosomes
+
+print(binary_encode_chromosomes([[2,3]], 10, 0, 10))
+
+
+
+
+def binary_decode(chromosome, binary_value, minimal_value, precision):
+    ret = []
+    for i in range(0, len(chromosome), precision):
+        g = int(chromosome[i:i + precision], 2)
+        ret.append(g * binary_value + minimal_value)
+    return ret
+
+def binary_decode_chromosomes(chromosomes, precision, minimal_value, maximum_value):
+    binary_value = (maximum_value - minimal_value) / (2**precision - 1)
+    binary_chromosomes = [binary_decode(c, binary_value, minimal_value, precision) for c in chromosomes]
+    return binary_chromosomes
+
+binary_decode_chromosomes(['11001100101011001100'], 10, 0, 10)
+
+
+
+
+2. Generisanje Populacije
+
+POCETNA POPULACIJA:
+
+def generate_initial_chromosomes(length, max, min, pop_size):
+    return [ [random.uniform(min, max) for j in range(length)] for i in range(pop_size)]
+
+def population_stats(costs):
+    return costs[0], sum(costs)/len(costs)
+
+
+
+
+3. Tipovi Selekcije
+
+
+--Roulette Selection--
+
+def rank_chromosomes(cost, chromosomes):
+    costs = list(map(cost, chromosomes))
+    ranked = sorted(list(zip(chromosomes, costs)), key = lambda c: c[1])
+    return list(zip(*ranked))
+
+--n_keep = niz clanova koje cuvamo--
+def natural_selection(chromosomes, n_keep):
+    return chromosomes[:n_keep]
+
+def roulette_selection(parents):
+    pairs = []
+    i = 0
+    for i in range(0, len(parents), 2):
+        weights = []
+        for i in range(len(parents)):
+            -- MINIMUM--
+            weights.append((len(parents) - i)*random.random()) 
+            --MAKSIMUM--
+            weights.append((i+1)*random.random())
+        
+        if(weights[0] >= weights[1]):
+            maxInd1 = 0
+            maxInd2 = 1
+        else:
+            maxInd1 = 1
+            maxInd2 = 0
+
+        for i in range(2, len(parents)):
+            if weights[i] > weights[maxInd1]:
+                maxInd2 = maxInd1
+                maxInd1 = i
+            elif weights[i] > weights[maxInd2]:
+                maxInd2 = 1
+        pairs.append([parents[maxInd1], parents[maxInd2]])
+    return pairs
+
+
+
+
+4. Funkcije za Ukrstanje
+
+
+Binarniga
+--Jednotackasto Ukrstanje--
+
+def one_point_crossover(pairs):
+    length = len(pairs[0])
+    children = []
+
+    for(a, b) in paris:
+        r = random.randrange(0, length)
+        children.append(a[:r] + b[r:])
+        children.append(b[:r] + a[r:])
+
+    return children
+
+--Dvotackasto Ukrstanje--
+
+def two_point_crossover(pairs):
+    length = len(pairs[0])
+    children = []
+
+    for(a,b) in pairs:
+        r1 = random.randrange(0, length)
+        r2 = random.randrange(0, length)
+
+        if r1<r2:
+            children.append(a[:r1] + b[r1:r2] + a[r2:])
+            children.append(b[:r1] + a[r1:r2] = b[r2:])
+        
+        else:
+            children.append(a[:r2] + b[r2:r1] + a[r1:])
+            children.append(b[:r2] + a[r2:r1] + b[r1:])
+
+        return children
+
+Realniga
+--Simetricno Ukrstanje--
+
+def crossover(pairs):
+    children = []
+
+    for a,b in pairs:
+        r = random.random()
+        y1 = []
+        y2 = []
+        for i in range(0, len(a)):
+            y1.append(r*a[i] + (1-r)*b[i])
+            y2.append((1-r)*a[i] + r*b[i])
+        children.append(y1)
+        children.append(y2)
+
+    return children
+
+
+
+5. Mutacije
+
+Binarniga
+--Mutacija Inverzijom--
+
+def inverted_mutation(chromosomes, mutation_rate):
+    mutated_chromosomes = []
+    
+    for chromosome in chromosomes:
+        if random.random() < mutation_rate:
+            r1 = random.randrange(0, len(chromosome) - 1)
+            r2 = random.randrange(0, len(chromosome) - 1)
+
+            if r1 < r2:
+                mutated_chromosomes.append(chromosome[:r1] + chromosome[r1:r2][::-1] + chromosome[r2:])
+            else:
+                mutated_chromosomes.append(chromosome[:r2] + chromosome[r2:r1][::-1] + chromosome[r1:])
+            
+        else:
+            mutated_chromosomes.append(chromosome)
+
+    return mutated_chromosomes
+
+
+--Mutacija Rotacijom--
+
+def mutation(chromosomes, mutation_rate):
+
+    mutated_chromosomes = []
+    
+    for chromosome in chromosomes:
+        if random.random() < mutation_rate:
+            r1 = random.randrange(0, len(chromosome) - 1)
+            mutated_chromosomes.append(chromosome[:r1] + str(1 - int(chromosome[r1]) + chromosome[r1+1:]))
+        else:
+            mutated_chromosomes.append(chromosome)
+
+    return mutated_chromosomes
+
+Realniga
+
+--Mutacija--
+
+def mutation(chromosomes, mutation_rate, mutation_width):
+    mutated_chromosomes = []
+    for chromosome in chromosomes:
+        y1 = []
+        for i in range(0, len(chromosome)):
+            if random.random() < mutation_rate:
+                r = random.random()
+                y1.append(chromosome[i] + mutation_width*2*(r-0.5))
+            else:
+                y1.append(chromosome[i])
+        mutated_chromosomes.append(y1)
+    return mutated_chromosomes
+
+
+Oba
+--Elitizam--
+
+def elitis(chromosomes_old, chromosomes_new, elitis_rate, population_size):
+    old_ind_size = int(np.round(population_size*elitis_rate))
+    return chromosomes_old[:old_ind_size] + chromosomes_new[:(population_size - old_ind_size)]
+
+
+
+

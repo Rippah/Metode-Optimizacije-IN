@@ -1,0 +1,89 @@
+1. Inicijalizacija (CLASS PARTICLE)
+
+def initialization(self, x0, number_of_dimesions, options):
+    self.position = []
+    self.velocity = []
+    self.best_position = []
+    self.best_fitness = -1
+    self.fitness = -1
+    self.number_of_dimesions = number_of_dimensions
+
+    for i in range(0, number_of_dimensions):
+        self.velocity.append((np.random.rand() - 0.5)*2*options.vspaninit)
+        self.position.append(x0[i][0])
+
+def evaluate(self, costFunc):
+    self.fitness = costFunc(self.position)
+    if(self.fitness < self.best_fitness or self.best_fitness == -1):
+        self.best_position = self.position
+        self.best_fitness = self.fitness
+    
+def linrate(self, xmax, xmin, tmax, tmin, t):
+    x = xmin + ((xmax - xmin)/(tmax-tmin))*(tmax - t)
+    return x
+
+def update_velocity(self, best_pos, maxit, it, opt):
+    w = self.linrate(opt.wf, opt.wi, maxit, 0, it)
+    cp = self.linrate(opt.cpf, opt.cpi, maxit, 0, it)
+    cg = self.linrate(opt.cgf, opt.cgi, maxit, 0, it)
+
+    for i in range(0, self.number_of_dimensions):
+        r1 = random.random()
+        r2 = random.random()
+
+        cognitive_velocity = cp * r1 * (self.best_position[i] - self.position[i])
+        social_velocity = cg * r2 * (best_position[i] - self.position[i])
+        self.velocity[i] = w*self.velocity[i] + cognitive_velocity + social_velocity
+
+def update_position(self):
+    for i in range(0, self.number_of_dimensions):
+        self.position[i] += self.velocity[i]
+
+    --Adjust Max Position--
+        if self.position[i] > bounds[i][1]:
+            self.position[i] = bounds[i][1]
+    --Adjust Min Position--
+        if self.position[i] < bounds[i][0]:
+            self.position[i] = bounds[i][0]
+
+2. Optimizacija (CLASS PSO)
+
+def init(self, costFunc, number_of_dimensions, options):
+    best_fit = -1
+    best_pos = []
+
+    maxit = options.nit #n iterations
+    number_of_particles = options.npart 
+    population = []
+
+    if((np.isnan(options.initial_population)).all()):
+        b = np.hape(options.initial_population)
+        if(np.size(b) == 1):
+            pno = b[0]
+            pdim = 1
+        if(pno != options.npart) or (pdim != options.nvar):
+            raise Error("Inconsistent!")
+        population = options.initial_population
+    
+    else:
+        for i in range(0, number_of_particles):
+            x0 = (np.random.rand(number_of_dimensions, 1) - 0.5)*2*options.initial_span + options.initial_offset
+            population.append(Particle(x0, number_of_dimensions, options))
+    
+    i = 0
+    while i < maxit:
+        for j in range(0, number_of_particles):
+            population[j].evaluate(costFunc)
+
+            if population[j].fitness < best_fit or best_fit == -1:
+                best_pos = list(population[j].position)
+                best_fit = float(population[j].fitness)
+        
+        for j in range(0, number_of_particles):
+            population[j].update_velocity(best_pos, maxit, i, options)
+            population[j].update_position()
+        
+        i += 1
+
+    print("Optimal point = ", best_pos)
+    print("Optimal value = ", best_fit)
