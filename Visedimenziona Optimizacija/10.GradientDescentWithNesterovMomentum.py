@@ -29,7 +29,6 @@ def nesterov_gradient(gradf, x0, gamma, epsilon, omega, n):
         x0 = x[-1] - omega*v
         v = omega*v + gamma*gradf(x0)
         x.append(x[-1] - v)
-        xp = np.copy(x)
         if np.linalg.norm(gradf(x)) < epsilon:
             break
     return x

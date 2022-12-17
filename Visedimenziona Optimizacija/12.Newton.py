@@ -17,13 +17,13 @@ def func_hessi(x):
 
 def newton(gradf, hess, x0, epsilon, n): #hess je funkcija koja pravi matricu hesijana
     x = np.array(x0).reshape(len(x0),1)
-    for k in range(n):
+    for i in range(n):
         g = gradf(x)
         hess_eval = hess(x) 
         Hinv = np.linalg.inv(hess_eval)
-        xp = np.copy(x) #cuva se prethodno resenje zbog uslova za prekidanje algoritma
+        xp = np.copy(x) #Cuva se prethodno resenje zbog uslova za prekidanje algoritma
         x = x - np.dot(Hinv,g)
-        if np.linalg.norm(x-xp)<epsilon: #DRUGACIJI USLOV NEGO U SVIM OSTALIM!
+        if np.linalg.norm(x - xp) < epsilon: #DRUGACIJI USLOV NEGO U SVIM OSTALIM!
             break
     return x
 
