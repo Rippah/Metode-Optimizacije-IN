@@ -21,7 +21,7 @@ def zlatni_presek(a, b, tol):
         else:
             a = x1
             x1 = a + c*(b-a)
-            x2 = a + b - x2
+            x2 = a + b - x1
 
     if func(x1) <= func(x2):
         xopt = x1
