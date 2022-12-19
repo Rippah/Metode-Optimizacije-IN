@@ -6,9 +6,9 @@ def binary_encode(chromosome, binary_value, minimal_value, precision):
 
     ret = ""
     for i in chromosome:
-        value = round((g - minimal_value)/binary_value)
+        value = round((i - minimal_value)/binary_value)
         print("Value = ", value)
-        ret += binary_value[2:].rjust(precision, '0')
+        ret += bin(value)[2:].rjust(precision, '0')
     return ret
 
 def binary_encode_chromosomes(chromosomes, precision, minimal_value, maximum_value):
@@ -106,7 +106,7 @@ def one_point_crossover(pairs):
     length = len(pairs[0])
     children = []
 
-    for(a, b) in paris:
+    for(a, b) in pairs:
         r = random.randrange(0, length)
         children.append(a[:r] + b[r:])
         children.append(b[:r] + a[r:])
@@ -123,9 +123,9 @@ def two_point_crossover(pairs):
         r1 = random.randrange(0, length)
         r2 = random.randrange(0, length)
 
-        if r1<r2:
+        if r1 < r2:
             children.append(a[:r1] + b[r1:r2] + a[r2:])
-            children.append(b[:r1] + a[r1:r2] = b[r2:])
+            children.append(b[:r1] + a[r1:r2] + b[r2:])
         
         else:
             children.append(a[:r2] + b[r2:r1] + a[r1:])

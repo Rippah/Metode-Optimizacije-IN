@@ -23,23 +23,21 @@ def grad_func(x):
     return np.array([diffx, diffy])
 
 def adam(gradf, x0, gamma, omega, omega2, epsilon, epsilon2, n):
-    x = [np.array(x0).reshape(len(x0), 1)]
-    v = [np.zeros(shape = x[-1].shape)]
-    m = [np.zeros(shape = x[-1].shape)]
+    xp = np.array(x0).reshape(len(x0), 1)
+    v = np.zeros(shape = xp.shape)
+    g = np.zeros(shape = xp.shape)
     for i in range(n):
-        G = np.asarray(gradf(x[-1]))
-        m.append(omega*m[-1] + (1 - omega)*G)
-        v.append(omega2*v[-1] + (1 - omega2)*np.multiply(G, G))
-        v_zero = np.abs(v[-1]/(1 - omega2))
-        m_zero = m[-1]/(1 - omega)
-        x.append(x[-1] - gamma*np.ones(shape = G.shape)/np.sqrt(v_zero + epsilon)*m_zero)
+        g = g*omega + (1 - omega)*gradf(xp)
+        v = omega2*v + (1 - omega2)*np.multiply(gradf(xp), gradf(xp))
+        v_zero = np.abs(v/(1 - omega2))
+        g_zero = g/(1 - omega)
+        x = xp - gamma*np.ones(shape = gradf(xp).shape)/np.sqrt(v_zero + epsilon)*g_zero
+        xp = np.copy(x)
         if np.linalg.norm(gradf(x)) < epsilon2:
             break
-    return x, v, m
+    return x
 
 #func(x), [a, b], korak, koeficijent izmene koraka, koeficijent izmene koraka, tolerancija, tolerancija, opseg
-rez, v, m = adam(lambda x: grad_func(x), [3, 0.1], 0.091, 0.9, 0.99, 1e-6, 1e-6, 100)
+rez = adam(lambda x: grad_func(x), [3, 0.1], 0.091, 0.9, 0.99, 1e-6, 1e-6, 1000)
 print("rez = ", rez)
-print("v = ", v)
-print("m = ", m)
 print("fopt = ", func(rez[0], rez[1]))
