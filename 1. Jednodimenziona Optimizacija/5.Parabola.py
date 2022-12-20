@@ -11,10 +11,7 @@ def parabola(x1, x3, tol):
     pom = np.ones(3).transpose()
     #y = [x^0, x^1, x^2]
     Y = np.array([pom, X, X*X]).transpose()
-    F = np.linspace(0, 0, len(X))
-
-    for i in range(0, len(X)):
-        F[i] = func(X[i])
+    F = np.copy(func(X))
     
     #f(x) = a + bx + cx**2
     #linalg.solve => Y*x = F => x = Y / F
@@ -24,28 +21,24 @@ def parabola(x1, x3, tol):
     #xopt = -b/2c
     x = -abc[1]/(2*abc[2])
     #fopt
-    fx = func(x)
+    fX = func(x)
     n = 0
 
     #ceo postupak funkcionise sve dok |f(opt) - y(opt)| < tolerancije
     #np.dot radi sledece => sum(NizA * NizB)
-    while np.abs(np.dot([1, x, x**2], abc) - fx) > tol:
+    while np.abs(np.dot([1, x, x**2], abc) - fX) > tol:
         if(x > X[1]) and (x < X[2]):
-            if(fx < F[1]) and (fx < F[2]):
+            if(fX < F[1]) and (fX < F[2]):
                 X = np.array([X[1], x, X[2]])
-                F = np.array([F[1], fx, F[2]])
-            elif(fx > F[1]) and (fx < F[2]):
+            elif(fX > F[1]) and (fX < F[2]):
                 X = np.array([X[0], X[1], x])
-                F = np.array([F[0], F[1], fx])
             else:
                 print("GRESKA")
-        elif(x > X[0]) and (x < X[2]):
-            if(fx < F[0]) and (fx < F[1]):
-                X = np.array([X[0], x, X[2]])
-                F = np.array([F[0], fx, F[2]])
-            elif(fx > F[1]) and (fx < F[0]):
+        elif(x > X[0]) and (x < X[1]):
+            if(fX < F[0]) and (fX < F[1]):
+                X = np.array([X[0], x, X[1]])
+            elif(fX > F[1]) and (fX < F[0]):
                 X = np.array([x, X[1], X[2]])
-                F = np.array([fx, F[1], F[2]])
             else:
                 print("GRESKA")
         else:
@@ -53,16 +46,13 @@ def parabola(x1, x3, tol):
 
         pom = np.ones(3).transpose()
         Y = np.array([pom, X, X*X]).transpose()
-        F = np.linspace(0, 0, len(X))
-
-        for i in range(0, len(X)):
-            F[i] = func(X[i])
+        F = np.copy(func(X))
         abc = np.linalg.solve(Y, F)
         x = -abc[1]/(2*abc[2])
-        fx = func(x)
+        fX = func(x)
         n += 1
 
-    return x, fx, n
+    return x, fX, n
 
 xopt, fopt, it = parabola(0, 2, 0.0001)
 
