@@ -23,18 +23,18 @@ def grad_func(x):
     return np.array([diffx, diffy])
 
 def RMSProp(gradf, x0, gamma, omega, epsilon, epsilon2, n):
-    xp = np.array(x0).reshape(len(x0), 1)
-    v = np.zeros(shape = xp.shape)
-    g = np.zeros(shape = xp.shape)
+    x = np.array(x0).reshape(len(x0), 1)
+    v = np.zeros(shape = x.shape)
+    g = np.zeros(shape = x.shape)
     for i in range(n):
         #Castuje u array
-        g = omega*g + (1 - omega)*np.multiply(gradf(xp), gradf(xp))
-        v = gamma*np.ones(shape = gradf(xp).shape) / np.sqrt(g + epsilon)*gradf(xp)
-        x = xp - v
-        xp = np.copy(x)
+        g = omega*g + (1 - omega)*np.multiply(gradf(x), gradf(x))
+        v = gamma*np.ones(shape = gradf(x).shape) / np.sqrt(g + epsilon)*gradf(x)
+        x -= v
         if np.linalg.norm(gradf(x)) < epsilon2:
             break
     return x
+
 
 #func(x), [a, b], korak, koeficijent izmene koraka, tolerancija, tolerancija, opseg
 rez = RMSProp(lambda x: grad_func(x), [3, 0.1], 0.1, 0.9, 1e-6, 1e-6, 100)

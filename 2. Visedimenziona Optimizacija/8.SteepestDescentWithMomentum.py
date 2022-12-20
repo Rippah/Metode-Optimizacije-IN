@@ -23,12 +23,11 @@ def grad_func(x):
     return np.array([diffx, diffy])
 
 def steepest_descent_with_momentum(gradf, x0, gamma, epsilon, omega, n):
-    xp = np.array(x0).reshape(len(x0), 1)
-    v = np.zeros(shape = xp.shape)
+    x = np.array(x0).reshape(len(x0), 1)
+    v = np.zeros(shape = x.shape)
     for i in range(n):
-        v = v*omega + gamma*gradf(xp)
-        x = xp - v
-        xp = np.copy(x)
+        v = v*omega + gamma*gradf(x)
+        x -= v
         if np.linalg.norm(gradf(x)) < epsilon:
             break
     return x

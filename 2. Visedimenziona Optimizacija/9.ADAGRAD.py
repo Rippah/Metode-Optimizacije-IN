@@ -23,14 +23,13 @@ def grad_func(x):
     return np.array([diffx, diffy])
 
 def adagrad_gradient(gradf, x0, gamma, epsilon, epsilon2, n):
-    xp = np.array(x0).reshape(len(x0), 1)
-    v = np.zeros(shape = xp.shape)
-    g = np.zeros(shape = xp.shape)
+    x = np.array(x0).reshape(len(x0), 1)
+    v = np.zeros(shape = x.shape)
+    g = np.zeros(shape = x.shape)
     for i in range(n):
-        g = g + np.multiply(gradf(xp), gradf(xp))
-        v = gamma*np.ones(shape = gradf(xp).shape) / np.sqrt(g + epsilon)*gradf(xp)
-        x = xp - v
-        xp = np.copy(x)
+        g = g + np.multiply(gradf(x), gradf(x))
+        v = gamma*np.ones(shape = gradf(x).shape) / np.sqrt(g + epsilon)*gradf(x)
+        x -= v
         if np.linalg.norm(gradf(x)) < epsilon2:
             break
     return x

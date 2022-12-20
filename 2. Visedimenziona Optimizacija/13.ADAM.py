@@ -23,16 +23,15 @@ def grad_func(x):
     return np.array([diffx, diffy])
 
 def adam(gradf, x0, gamma, omega, omega2, epsilon, epsilon2, n):
-    xp = np.array(x0).reshape(len(x0), 1)
-    v = np.zeros(shape = xp.shape)
-    g = np.zeros(shape = xp.shape)
+    x = np.array(x0).reshape(len(x0), 1)
+    v = np.zeros(shape = x.shape)
+    g = np.zeros(shape = x.shape)
     for i in range(n):
-        g = g*omega + (1 - omega)*gradf(xp)
-        v = omega2*v + (1 - omega2)*np.multiply(gradf(xp), gradf(xp))
+        g = g*omega + (1 - omega)*gradf(x)
+        v = omega2*v + (1 - omega2)*np.multiply(gradf(x), gradf(x))
         v_zero = np.abs(v/(1 - omega2))
         g_zero = g/(1 - omega)
-        x = xp - gamma*np.ones(shape = gradf(xp).shape)/np.sqrt(v_zero + epsilon)*g_zero
-        xp = np.copy(x)
+        x -= gamma*np.ones(shape = gradf(x).shape)/np.sqrt(v_zero + epsilon)*g_zero
         if np.linalg.norm(gradf(x)) < epsilon2:
             break
     return x

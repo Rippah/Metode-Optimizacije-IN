@@ -23,12 +23,11 @@ def grad_func(x):
     return np.array([diffx, diffy])
 
 def nesterov_gradient(gradf, x0, gamma, epsilon, omega, n):
-    x = [np.array(x0).reshape(len(x0), 1)]
-    v = np.zeros(shape = x[-1].shape)
+    x = np.array(x0).reshape(len(x0), 1)
+    v = np.zeros(shape = x.shape)
     for i in range(n):
-        x0 = x[-1] - omega*v
-        v = omega*v + gamma*gradf(x0)
-        x.append(x[-1] - v)
+        v = omega*v + gamma*gradf(x - omega*v)
+        x -= v
         if np.linalg.norm(gradf(x)) < epsilon:
             break
     return x
