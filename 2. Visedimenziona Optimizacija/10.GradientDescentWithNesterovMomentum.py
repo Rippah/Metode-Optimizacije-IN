@@ -27,7 +27,7 @@ def nesterov_gradient(grad_func, x0, gamma, epsilon, omega, n):
     v = np.zeros(shape = x.shape)
     for i in range(n):
         v = omega*v + gamma*grad_func(x - omega*v)
-        x -= v
+        x = x - v
         if np.linalg.norm(grad_func(x)) < epsilon:
             break
     return x

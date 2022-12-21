@@ -30,7 +30,7 @@ def RMSProp(grad_func, x0, gamma, omega, epsilon, epsilon2, n):
         #Castuje u array
         g = omega*g + (1 - omega)*np.multiply(grad_func(x), grad_func(x))
         v = gamma*np.ones(shape = grad_func(x).shape) / np.sqrt(g + epsilon)*grad_func(x)
-        x -= v
+        x = x - v
         if np.linalg.norm(grad_func(x)) < epsilon2:
             break
     return x

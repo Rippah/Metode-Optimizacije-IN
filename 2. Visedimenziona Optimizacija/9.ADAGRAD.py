@@ -29,7 +29,7 @@ def adagrad_gradient(grad_func, x0, gamma, epsilon, epsilon2, n):
     for i in range(n):
         g = g + np.multiply(grad_func(x), grad_func(x))
         v = gamma*np.ones(shape = grad_func(x).shape) / np.sqrt(g + epsilon)*grad_func(x)
-        x -= v
+        x = x - v
         if np.linalg.norm(grad_func(x)) < epsilon2:
             break
     return x

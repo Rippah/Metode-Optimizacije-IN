@@ -31,7 +31,7 @@ def adam(grad_func, x0, gamma, omega, omega2, epsilon, epsilon2, n):
         v = omega2*v + (1 - omega2)*np.multiply(grad_func(x), grad_func(x))
         v_zero = np.abs(v/(1 - omega2))
         g_zero = g/(1 - omega)
-        x -= gamma*np.ones(shape = grad_func(x).shape)/np.sqrt(v_zero + epsilon)*g_zero
+        x = x - gamma*np.ones(shape = grad_func(x).shape)/np.sqrt(v_zero + epsilon)*g_zero
         if np.linalg.norm(grad_func(x)) < epsilon2:
             break
     return x
