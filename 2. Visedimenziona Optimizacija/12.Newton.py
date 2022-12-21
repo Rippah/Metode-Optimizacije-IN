@@ -38,12 +38,12 @@ def func_hessi(x):
     M = [[2,0], [0,20]]
     return M
 
-def newton(gradf, hess, x0, epsilon, n): #hess je funkcija koja pravi matricu hesijana
+def newton(grad_func, hess, x0, epsilon, n): #hess je funkcija koja pravi matricu hesijana
     x = np.array(x0).reshape(len(x0),1)
     for i in range(n):
         Hinv = np.linalg.inv(hess(x))
         xp = np.copy(x) #Cuva se prethodno resenje zbog uslova za prekidanje algoritma
-        x = x - np.dot(Hinv, gradf(x))
+        x = x - np.dot(Hinv, grad_func(x))
         if np.linalg.norm(x - xp) < epsilon: #DRUGACIJI USLOV NEGO U SVIM OSTALIM!
             break
     return x
