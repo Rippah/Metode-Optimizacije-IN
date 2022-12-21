@@ -22,16 +22,16 @@ def grad_func(x):
     diffy = (0.04*x[1] - 0.04)*((x[0] + 1)**2 + 2*(x[1] + 1)**2 + 0.5)*((x[0] + 2)**2 + 2*(x[1] - 2)**2 + 0.7) + (4*x[1] - 8)*(0.01*(x[0] - 1)**2 + 0.02*(x[1] - 1)**2)*((x[0] + 1)**2 + 2*(x[1] + 1)**2 + 0.5) + (4*x[1] + 4)*(0.01*(x[0] - 1)**2 + 0.02*(x[1] - 1)**2)*((x[0] + 2)**2 + 2*(x[1] - 2)**2 + 0.7)
     return np.array([diffx, diffy])
 
-def RMSProp(gradf, x0, gamma, omega, epsilon, epsilon2, n):
+def RMSProp(grad_func, x0, gamma, omega, epsilon, epsilon2, n):
     x = np.array(x0).reshape(len(x0), 1)
     v = np.zeros(shape = x.shape)
     g = np.zeros(shape = x.shape)
     for i in range(n):
         #Castuje u array
-        g = omega*g + (1 - omega)*np.multiply(gradf(x), gradf(x))
-        v = gamma*np.ones(shape = gradf(x).shape) / np.sqrt(g + epsilon)*gradf(x)
-        x -= v
-        if np.linalg.norm(gradf(x)) < epsilon2:
+        g = omega*g + (1 - omega)*np.multiply(grad_func(x), grad_func(x))
+        v = gamma*np.ones(shape = grad_func(x).shape) / np.sqrt(g + epsilon)*grad_func(x)
+        x = x - v
+        if np.linalg.norm(grad_func(x)) < epsilon2:
             break
     return x
 

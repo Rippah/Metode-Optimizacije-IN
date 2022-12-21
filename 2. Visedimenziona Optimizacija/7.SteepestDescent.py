@@ -22,11 +22,11 @@ def grad_func(x):
     diffy = (0.04*x[1] - 0.04)*((x[0] + 1)**2 + 2*(x[1] + 1)**2 + 0.5)*((x[0] + 2)**2 + 2*(x[1] - 2)**2 + 0.7) + (4*x[1] - 8)*(0.01*(x[0] - 1)**2 + 0.02*(x[1] - 1)**2)*((x[0] + 1)**2 + 2*(x[1] + 1)**2 + 0.5) + (4*x[1] + 4)*(0.01*(x[0] - 1)**2 + 0.02*(x[1] - 1)**2)*((x[0] + 2)**2 + 2*(x[1] - 2)**2 + 0.7)
     return np.array([diffx, diffy])
 
-def steepest_descent(gradf, x0, gamma, epsilon, n):
+def steepest_descent(grad_func, x0, gamma, epsilon, n):
     x = np.array(x0).reshape(len(x0), 1)
     for i in range(n):
-        x = x - gamma*gradf(x)
-        if np.linalg.norm(gradf(x)) < epsilon:
+        x = x - gamma*grad_func(x)
+        if np.linalg.norm(grad_func(x)) < epsilon:
             break
     return x
 
